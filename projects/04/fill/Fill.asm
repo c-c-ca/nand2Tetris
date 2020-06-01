@@ -11,51 +11,49 @@
 // "white" in every pixel;
 // the screen should remain fully clear as long as no key is pressed.
 
-// Screen clearing code:
-// Initialize pointer to clear screen
+// Initialize pointer before clearing screen
 (BEGIN)
     @SCREEN
-    D=A      // D=SCREEN
+    D=A        // D=SCREEN
     @ptr
-    M=D      // ptr=SCREEN
+    M=D        // ptr=SCREEN
 (CLEAR)
     @ptr
     A=M
-    M=0      // *ptr=0
+    M=0        // *ptr=0
     @ptr
-    M=M+1    // ptr++
+    M=M+1      // ptr++
     D=M
     @KBD
     D=D-A
     @CLEAR
-    D;JLT    // If ptr<KBD goto CLEAR
-(KEY_DOWN)   // loops until a key is pressed
-    @KBD
-    D=M
-    @KEY_DOWN
-    D;JEQ
-
-// Screen filling code:
-// Initialize pointer to fill screen
-    @SCREEN
-    D=A      // D=SCREEN
-    @ptr
-    M=D      // ptr=SCREEN
-(FILL)
-    @ptr
-    A=M
-    M=-1     // *ptr=0
-    @ptr
-    M=M+1    // ptr++
-    D=M
-    @KBD
-    D=D-A
-    @FILL
-    D;JLT    // If ptr<KBD goto FILL
+    D;JLT      // If ptr<KBD goto CLEAR
 (KEY_UP)
     @KBD
     D=M
     @KEY_UP
-    D;JNE
+    D;JEQ      // loops while each key is up
+
+// Initialize pointer before filling screen
+    @SCREEN
+    D=A        // D=SCREEN
+    @ptr
+    M=D        // ptr=SCREEN
+(FILL)
+    @ptr
+    A=M
+    M=-1       // *ptr=0
+    @ptr
+    M=M+1      // ptr++
+    D=M
+    @KBD
+    D=D-A
+    @FILL
+    D;JLT      // If ptr<KBD goto FILL
+(KEY_DOWN)
+    @KBD
+    D=M
+    @KEY_DOWN
+    D;JNE      // loops while any key is down
     @BEGIN
     0;JMP
